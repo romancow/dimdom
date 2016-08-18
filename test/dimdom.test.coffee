@@ -73,8 +73,7 @@ describe 'DimDom', ->
 
 		forAllContexts constructorContexts, ->
 			it 'is set', ->
-				expect(@subject).to.have.property('name')
-					.that.equals('div')
+				expect(@subject).to.have.property('name', 'div')
 
 	describe '#attributes', ->
 		setContexts = filterContexts constructorContexts,
@@ -89,7 +88,7 @@ describe 'DimDom', ->
 
 		forAllContexts setContexts, ->
 			it 'is set', ->
-				expect(@subject).to.have.property('attributes')
+				expect(@subject).to.have.deep.property('attributes')
 					.that.deep.equals({ class: 'test', id: '1' })
 
 		forAllContexts emptyContexts, ->
@@ -145,8 +144,58 @@ describe 'DimDom', ->
 				expect(@subject).to.have.property('children')
 					.that.is.empty
 
-	describe '#create'
+	describe '#create', ->
+		basicContext = filterContexts constructorContexts,
+			'with just name'
+		complexContext = filterContexts constructorContexts,
+			'with all properties'
+		bothContexts = filterContexts constructorContexts,
+			'with just name'
+			'with all properties'
 
-	describe '#appendTo'
+		given 'result', -> @subject.create(document)
 
-		
+		forAllContexts bothContexts, ->
+			it 'is a Node', ->
+				expect(@result).to.be.instanceof(HTMLDivElement)
+
+			it 'is a div', ->
+				expect(@result.tagName).to.equal('DIV')
+
+		forAllContexts basicContext, ->
+			it 'has no attributes', ->
+				expect(@result.hasAttributes()).to.be.false
+
+			it 'has no styles', ->
+				expect(@result.style).to.have.lengthOf(0)
+
+			it 'has no children', ->
+				expect(@result.hasChildNodes()).to.be.false
+
+		forAllContexts complexContext, ->
+			it 'has attributes', ->
+				expect(@result.attributes).to.satisfy (attrs) ->
+					attrs.getNamedItem('class')?.value is 'test' and 
+					attrs.getNamedItem('id')?.value is '1'
+
+			it 'has styles', ->
+				expect(@result.style).to.have.property('color', 'black')
+				expect(@result.style).to.have.property('margin', '0px')
+
+			it 'has children', ->
+				expect(@result.children).to.satisfy ([h1, p]) ->
+					(h1.tagName is 'H1') and (h1.innerHTML is 'The Header') and 
+					(p.tagName is 'P') and (p.innerHTML is 'Testing...')
+	
+	describe '#appendTo', ->
+		given 'result', -> @subject.appendTo(document.body)
+		myContext = filterContexts constructorContexts,
+			'with all properties'
+
+		forAllContexts myContext, ->
+			it 'resturns self', ->
+				expect(@result).to.equal(@subject)
+
+			it 'appends', ->
+				element = document.getElementById('1')
+				expect(element).to.exist.and.to.have.property('tagName', 'DIV')
