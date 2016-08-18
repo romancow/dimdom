@@ -1,0 +1,64 @@
+class DimDom
+
+	constructor: (name, attributes, styles, children) ->
+		[name, attributes, styles, children] = 
+			findConstructorArgs(name, attributes, styles, children)
+		Object.defineProperties @,
+			name:
+				value: name
+			attributes:
+				value: attributes
+			styles:
+				value: styles
+			children:
+				value: children
+	
+	create: (document) ->
+		node = document.createElement(@name)
+		for own name, value of @attributes when value?
+			node.setAttribute(name, value)
+		for own name, value of @styles when value?
+			node.style[name] = value
+		for child in @children
+			if child instanceof DimDom
+				child.appendTo(node)
+			else 
+				child = document.createTextNode(child) unless child instanceof Node
+				node.appendChild(child)
+		return node
+
+	appendTo:  (node) ->
+		child = @create(node.ownerDocument)
+		node.appendChild(child)
+		return @
+
+	findConstructorArgs = (name, attributes, styles, children) ->
+		unless isString(name)
+			throw new TypeError("DimDom name must be a string, not \"#{typeof name}\"")
+
+		if isChildren(attributes)
+			[attributes, styles, children] = [{}, {}, attributes]
+		else if isChildren(styles)			
+			[styles, children] = [attributes['styles'] ? {}, styles]
+			delete attributes['styles']
+
+		children = ensureArray(children)
+			
+		[name, attributes, styles, children]
+
+	isString = (val) ->
+		(typeof val is 'string') or (val instanceof String)
+
+	isObject = (val) ->
+		val? and (typeof val is 'object') and not Array.isArray(val)
+
+	isChildren = (val) ->
+		(val instanceof DimDom) or (val instanceof Node) or not isObject(val)
+
+	ensureArray = (val) ->
+		unless val?
+			[]
+		else if Array.isArray(val)
+			val 
+		else 
+			[val]
