@@ -156,7 +156,7 @@ describe 'DimDom', ->
 					(p.tagName is 'P') and (p.innerHTML is 'Testing...')
 	
 		context 'with SVG namespace', ->
-			subject -> new DimDom(['http://www.w3.org/2000/svg', 'svg'], width:100, height:100)
+			subject -> new DimDom([DimDom.NS.SVG, 'svg'], width:100, height:100)
 
 			it 'is a SVGSVGElement', ->
 				expect(@result).to.be.instanceof(SVGSVGElement)
