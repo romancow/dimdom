@@ -1,5 +1,7 @@
 # DimDom
 
+[[About](#about) | [Installation](#installation) | [Examples](#examples)]
+
 ## About
 DimDom is a small javascript library for representing a html DOM structure in a
 simple, naive manner.
