@@ -55,7 +55,7 @@ Create a simple HTML element with some inner text:
 
     var elem = new DimDom("div", "This is the inner text.");
 
-Create an HTML element with attrbiutes, style, and some inner text:
+Create an HTML element with attributes, style, and some inner text:
 
     var elem = new DimDom("div", {class:"example"}, {color:"SlateGray"}, "This is the inner text.");
 
@@ -66,9 +66,9 @@ Create an HTML element with attributes and children elements:
         new DimDom("p", "This is the inner text.")
     ]);
 
-To specify an element namespace, pass two item array as the first argument to the
-constructor. The first item is the namespace, the second shoudl be the element name.
-For convenience the standard HTML, SVG, and MathML namespaces can be found at 
+To specify an element namespace, pass a two item array as the first argument to the
+constructor. The first item is the namespace, the second should be the element name.
+For convenience, the standard HTML, SVG, and MathML namespaces can be found at 
 `DimDom.NS`:
 
     var elem = new DimDom([DimDom.NS.SVG, "svg"], {width:500, height:300},
