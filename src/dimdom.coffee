@@ -1,9 +1,11 @@
 class DimDom
 
 	constructor: (name, attributes, styles, children) ->
-		[name, attributes, styles, children] = 
+		[namespace, name, attributes, styles, children] = 
 			findConstructorArgs(name, attributes, styles, children)
 		Object.defineProperties @,
+			namespace:
+				value: namespace
 			name:
 				value: name
 			attributes:
@@ -14,7 +16,11 @@ class DimDom
 				value: children
 	
 	create: (document) ->
-		node = document.createElement(@name)
+		node = 
+			if @namespace?
+				document.createElementNS(@namespace, @name)
+			else
+				document.createElement(@name)
 		for own name, value of @attributes when value?
 			node.setAttribute(name, value)
 		for own name, value of @styles when value?
@@ -33,8 +39,12 @@ class DimDom
 		return @
 
 	findConstructorArgs = (name, attributes, styles, children) ->
-		unless isString(name)
+		[namespace, name] = name if Array.isArray(name)
+
+		if not isString(name)
 			throw new TypeError("DimDom name must be a string, not \"#{typeof name}\"")
+		if namespace? and not isString(namespace)
+			throw new TypeError("DimDom namespace must be a string, not \"#{typeof namespace}\"")
 
 		if isChildren(attributes)
 			[attributes, styles, children] = [{}, {}, attributes]
@@ -44,7 +54,7 @@ class DimDom
 
 		children = ensureArray(children)
 			
-		[name, attributes, styles, children]
+		[namespace, name, attributes, styles, children]
 
 	isString = (val) ->
 		(typeof val is 'string') or (val instanceof String)

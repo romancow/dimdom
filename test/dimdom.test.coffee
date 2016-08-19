@@ -117,14 +117,14 @@ describe 'DimDom', ->
 			'with just name'
 		complexContext = filterContexts constructorContexts,
 			'with all properties'
-		bothContexts = filterContexts constructorContexts,
+		basicAndComplexContexts = filterContexts constructorContexts,
 			'with just name'
 			'with all properties'
 
 		given 'result', -> @subject.create(document)
 
-		forAllContexts bothContexts, ->
-			it 'is a Node', ->
+		forAllContexts basicAndComplexContexts, ->
+			it 'is a HTMLDivElement', ->
 				expect(@result).to.be.instanceof(HTMLDivElement)
 
 			it 'is a div', ->
@@ -155,6 +155,12 @@ describe 'DimDom', ->
 					(h1.tagName is 'H1') and (h1.innerHTML is 'The Header') and 
 					(p.tagName is 'P') and (p.innerHTML is 'Testing...')
 	
+		context 'with SVG namespace', ->
+			subject -> new DimDom(['http://www.w3.org/2000/svg', 'svg'], width:100, height:100)
+
+			it 'is a SVGSVGElement', ->
+				expect(@result).to.be.instanceof(SVGSVGElement)
+
 	describe '#appendTo', ->
 		given 'result', -> @subject.appendTo(document.body)
 		myContext = filterContexts constructorContexts,

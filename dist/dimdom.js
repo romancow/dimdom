@@ -7,9 +7,12 @@
     var ensureArray, findConstructorArgs, isChildren, isObject, isString;
 
     function DimDom(name, attributes, styles, children) {
-      var ref;
-      ref = findConstructorArgs(name, attributes, styles, children), name = ref[0], attributes = ref[1], styles = ref[2], children = ref[3];
+      var namespace, ref;
+      ref = findConstructorArgs(name, attributes, styles, children), namespace = ref[0], name = ref[1], attributes = ref[2], styles = ref[3], children = ref[4];
       Object.defineProperties(this, {
+        namespace: {
+          value: namespace
+        },
         name: {
           value: name
         },
@@ -27,7 +30,7 @@
 
     DimDom.prototype.create = function(document) {
       var child, i, len, name, node, ref, ref1, ref2, value;
-      node = document.createElement(this.name);
+      node = this.namespace != null ? document.createElementNS(this.namespace, this.name) : document.createElement(this.name);
       ref = this.attributes;
       for (name in ref) {
         if (!hasProp.call(ref, name)) continue;
@@ -67,18 +70,24 @@
     };
 
     findConstructorArgs = function(name, attributes, styles, children) {
-      var ref, ref1, ref2;
+      var namespace, ref, ref1, ref2, ref3;
+      if (Array.isArray(name)) {
+        ref = name, namespace = ref[0], name = ref[1];
+      }
       if (!isString(name)) {
         throw new TypeError("DimDom name must be a string, not \"" + (typeof name) + "\"");
       }
+      if ((namespace != null) && !isString(namespace)) {
+        throw new TypeError("DimDom namespace must be a string, not \"" + (typeof namespace) + "\"");
+      }
       if (isChildren(attributes)) {
-        ref = [{}, {}, attributes], attributes = ref[0], styles = ref[1], children = ref[2];
+        ref1 = [{}, {}, attributes], attributes = ref1[0], styles = ref1[1], children = ref1[2];
       } else if (isChildren(styles)) {
-        ref2 = [(ref1 = attributes['styles']) != null ? ref1 : {}, styles], styles = ref2[0], children = ref2[1];
+        ref3 = [(ref2 = attributes['styles']) != null ? ref2 : {}, styles], styles = ref3[0], children = ref3[1];
         delete attributes['styles'];
       }
       children = ensureArray(children);
-      return [name, attributes, styles, children];
+      return [namespace, name, attributes, styles, children];
     };
 
     isString = function(val) {
