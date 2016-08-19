@@ -81,6 +81,17 @@ As a shortcut for creating elements for the preset namespaces:
         new DimDom.SVG("circle", {cx:100, cy:100, r:25})
     );
 
+To alter attributes, style, or children after instantiation, use the `attributes`,
+`styles`, and `children` properties:
+
+    var elem = new DimDom("div", {class:"example"});
+    elem.attributes["id"] = "example1";
+    elem.styles["margin"] = 0;
+    elem.children.push(
+        new DimDom("h1", "An Interesting Header"),
+        new DimDom("p", "This is the inner text.")
+    );
+
 To get an actual Node object to insert into a document:
 
     var elem = new DimDom("div", "This is the inner text.");
