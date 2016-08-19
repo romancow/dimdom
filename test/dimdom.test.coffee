@@ -1,6 +1,7 @@
 describe 'DimDom', ->
 
 	given 'name', -> 'div'
+	given 'namespace', -> DimDom.NS.HTML
 	given 'attributes', ->  { class: 'test', id: '1' }
 	given 'styles', -> { color: 'black', margin: 0 }
 	given 'child', -> new DimDom('p', 'Testing...')
@@ -12,6 +13,9 @@ describe 'DimDom', ->
 	constructorContexts =
 		'with just name': ->
 			subject -> new DimDom(@name)
+
+		'with namespace': ->
+			subject -> new DimDom([@namespace, @name])
 
 		'with attributes': ->
 			subject -> new DimDom(@name, @attributes)
@@ -29,7 +33,7 @@ describe 'DimDom', ->
 			subject -> new DimDom(@name, @children)
 
 		'with all properties': ->
-			subject -> new DimDom(@name, @attributes, @styles, @children)
+			subject -> new DimDom([@namespace, @name], @attributes, @styles, @children)
 
 	describe '#constructor', ->
 
@@ -43,12 +47,33 @@ describe 'DimDom', ->
 			it 'is set', ->
 				expect(@subject).to.have.property('name', 'div')
 
+	describe '#namespace', ->
+		setContexts = filterContexts constructorContexts,
+			'with namespace'
+			'with all properties'
+		emptyContexts = filterContexts constructorContexts,
+			'with just name'
+			'with attributes'
+			'with styles'
+			'with styles in attributes'
+			'with a child'
+			'with children'
+
+		forAllContexts setContexts, ->
+			it 'is set', ->
+				expect(@subject).to.have.property('namespace', DimDom.NS.HTML)
+
+		forAllContexts emptyContexts, ->
+			it 'is non-existent', ->
+				expect(@subject).to.have.property('namespace').and.not.exist
+
 	describe '#attributes', ->
 		setContexts = filterContexts constructorContexts,
 			'with attributes'
 			'with all properties'
 		emptyContexts = filterContexts constructorContexts,
 			'with just name'
+			'with namespace'
 			'with styles'
 			'with styles in attributes'
 			'with a child'
@@ -71,6 +96,7 @@ describe 'DimDom', ->
 			'with all properties'
 		emptyContexts = filterContexts constructorContexts,
 			'with just name'
+			'with namespace'
 			'with attributes'
 			'with a child'
 			'with children'
@@ -93,6 +119,7 @@ describe 'DimDom', ->
 			'with all properties'
 		emptyContexts = filterContexts constructorContexts,
 			'with just name'
+			'with namespace'
 			'with attributes'
 			'with styles'
 			'with styles in attributes'
