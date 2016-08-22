@@ -5,7 +5,7 @@
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   DimDom = (function() {
-    var ensureArray, findConstructorArgs, isChildren, isObject, isString;
+    var createNode, ensureArray, findConstructorArgs, getChildrenNodes, isChildren, isObject, isString;
 
     function DimDom(name, attributes, styles, children) {
       var namespace, ref;
@@ -30,37 +30,11 @@
     }
 
     DimDom.prototype.create = function(document) {
-      var child, i, len, name, node, ref, ref1, ref2, value;
-      node = this.namespace != null ? document.createElementNS(this.namespace, this.name) : document.createElement(this.name);
-      ref = this.attributes;
-      for (name in ref) {
-        if (!hasProp.call(ref, name)) continue;
-        value = ref[name];
-        if (value != null) {
-          node.setAttribute(name, value);
-        }
-      }
-      ref1 = this.styles;
-      for (name in ref1) {
-        if (!hasProp.call(ref1, name)) continue;
-        value = ref1[name];
-        if (value != null) {
-          node.style[name] = value;
-        }
-      }
-      ref2 = this.children;
-      for (i = 0, len = ref2.length; i < len; i++) {
-        child = ref2[i];
-        if (child instanceof DimDom) {
-          child.appendTo(node);
-        } else {
-          if (!(child instanceof Node)) {
-            child = document.createTextNode(child);
-          }
-          node.appendChild(child);
-        }
-      }
-      return node;
+      var fragment, node;
+      fragment = document.createDocumentFragment();
+      node = createNode.call(this, document);
+      fragment.appendChild(node);
+      return fragment;
     };
 
     DimDom.prototype.appendTo = function(node) {
@@ -89,6 +63,52 @@
       }
       children = ensureArray(children);
       return [namespace, name, attributes, styles, children];
+    };
+
+    createNode = function(document) {
+      var childNode, childrenNodes, i, len, name, node, ref, ref1, value;
+      node = this.namespace != null ? document.createElementNS(this.namespace, this.name) : document.createElement(this.name);
+      ref = this.attributes;
+      for (name in ref) {
+        if (!hasProp.call(ref, name)) continue;
+        value = ref[name];
+        if (value != null) {
+          node.setAttribute(name, value);
+        }
+      }
+      ref1 = this.styles;
+      for (name in ref1) {
+        if (!hasProp.call(ref1, name)) continue;
+        value = ref1[name];
+        if (value != null) {
+          node.style[name] = value;
+        }
+      }
+      childrenNodes = getChildrenNodes.call(this, document);
+      for (i = 0, len = childrenNodes.length; i < len; i++) {
+        childNode = childrenNodes[i];
+        if (childNode != null) {
+          node.appendChild(childNode);
+        }
+      }
+      return node;
+    };
+
+    getChildrenNodes = function(document) {
+      var child, i, len, ref, results;
+      ref = this.children;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        child = ref[i];
+        if (child instanceof DimDom) {
+          results.push(createNode.call(child, document));
+        } else if (!(child instanceof Node)) {
+          results.push(document.createTextNode(child));
+        } else {
+          results.push(child);
+        }
+      }
+      return results;
     };
 
     isString = function(val) {
