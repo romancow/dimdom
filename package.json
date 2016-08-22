@@ -5,7 +5,7 @@
   "main": "dist/dimdom.js",
   "scripts": {
     "test": "karma start",
-    "build": "coffee -c -o dist ./src/dimdom.coffee"
+    "build": "cake build"
   },
   "repository": {
     "type": "git",
