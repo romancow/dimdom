@@ -149,36 +149,43 @@ describe 'DimDom', ->
 			'with all properties'
 
 		given 'result', -> @subject.create(document)
+		given 'node', -> @result.firstChild
 
 		forAllContexts basicAndComplexContexts, ->
-			it 'is a HTMLDivElement', ->
-				expect(@result).to.be.instanceof(HTMLDivElement)
+			it 'is a DocumentFragment', ->
+				expect(@result).to.be.instanceof(DocumentFragment)
+
+			it 'has only one child', ->
+				expect(@result.childNodes).to.have.lengthOf(1)
+
+			it 'has a HTMLDivElement', ->
+				expect(@node).to.be.instanceof(HTMLDivElement)
 
 			it 'is a div', ->
-				expect(@result.tagName).to.equal('DIV')
+				expect(@node.tagName).to.equal('DIV')
 
 		forAllContexts basicContext, ->
 			it 'has no attributes', ->
-				expect(@result.hasAttributes()).to.be.false
+				expect(@node.hasAttributes()).to.be.false
 
 			it 'has no styles', ->
-				expect(@result.style).to.have.lengthOf(0)
+				expect(@node.style).to.have.lengthOf(0)
 
 			it 'has no children', ->
-				expect(@result.hasChildNodes()).to.be.false
+				expect(@node.hasChildNodes()).to.be.false
 
 		forAllContexts complexContext, ->
 			it 'has attributes', ->
-				expect(@result.attributes).to.satisfy (attrs) ->
+				expect(@node.attributes).to.satisfy (attrs) ->
 					attrs.getNamedItem('class')?.value is 'test' and 
 					attrs.getNamedItem('id')?.value is '1'
 
 			it 'has styles', ->
-				expect(@result.style).to.have.property('color', 'black')
-				expect(@result.style).to.have.property('margin', '0px')
+				expect(@node.style).to.have.property('color', 'black')
+				expect(@node.style).to.have.property('margin', '0px')
 
 			it 'has children', ->
-				expect(@result.children).to.satisfy ([h1, p]) ->
+				expect(@node.children).to.satisfy ([h1, p]) ->
 					(h1.tagName is 'H1') and (h1.innerHTML is 'The Header') and 
 					(p.tagName is 'P') and (p.innerHTML is 'Testing...')
 	
@@ -186,7 +193,7 @@ describe 'DimDom', ->
 			subject -> new DimDom([DimDom.NS.SVG, 'svg'], width:100, height:100)
 
 			it 'is a SVGSVGElement', ->
-				expect(@result).to.be.instanceof(SVGSVGElement)
+				expect(@node).to.be.instanceof(SVGSVGElement)
 
 	describe '#appendTo', ->
 		given 'result', -> @subject.appendTo(document.body)

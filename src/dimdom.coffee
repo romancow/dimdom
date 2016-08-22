@@ -16,27 +16,17 @@ class DimDom
 				value: children
 	
 	create: (document) ->
-		node = 
-			if @namespace?
-				document.createElementNS(@namespace, @name)
-			else
-				document.createElement(@name)
-		for own name, value of @attributes when value?
-			node.setAttribute(name, value)
-		for own name, value of @styles when value?
-			node.style[name] = value
-		for child in @children
-			if child instanceof DimDom
-				child.appendTo(node)
-			else 
-				child = document.createTextNode(child) unless child instanceof Node
-				node.appendChild(child)
-		return node
+		fragment = document.createDocumentFragment()
+		node = createNode.call(@, document)
+		fragment.appendChild(node)
+		return fragment
 
 	appendTo:  (node) ->
 		child = @create(node.ownerDocument)
 		node.appendChild(child)
 		return @
+
+	# private methods
 
 	findConstructorArgs = (name, attributes, styles, children) ->
 		[namespace, name] = name if Array.isArray(name)
@@ -55,6 +45,30 @@ class DimDom
 		children = ensureArray(children)
 			
 		[namespace, name, attributes, styles, children]
+
+	createNode = (document) ->
+		node = 
+			if @namespace?
+				document.createElementNS(@namespace, @name)
+			else
+				document.createElement(@name)
+		for own name, value of @attributes when value?
+			node.setAttribute(name, value)
+		for own name, value of @styles when value?
+			node.style[name] = value
+		childrenNodes = getChildrenNodes.call(@, document)
+		for childNode in childrenNodes when childNode?
+			node.appendChild(childNode)
+		return node
+
+	getChildrenNodes = (document) ->
+		for child in @children
+			if child instanceof DimDom
+				createNode.call(child, document)
+			else if child not instanceof Node
+				document.createTextNode(child)
+			else
+				child
 
 	isString = (val) ->
 		(typeof val is 'string') or (val instanceof String)
