@@ -3,6 +3,7 @@
   "version": "0.2.1-beta.1",
   "description": "A small, simple way to represent a DOM - a “diminished DOM”",
   "main": "dist/dimdom.js",
+  "copyright": "Data Concepts, Inc.",
   "scripts": {
     "test": "karma start",
     "build": "cake build"
@@ -16,12 +17,17 @@
     "dom",
     "diminished"
   ],
-  "author": "Sean Wilson",
+  "author": {
+    "name": "Sean Wilson",
+    "email": "scw@adque.com",
+    "url": "http://seanwilson.me"
+  },
   "license": "MIT",
+  "licenseUrl": "https://raw.githubusercontent.com/romancow/dimdom/master/LICENSE.txt",
   "bugs": {
     "url": "https://github.com/romancow/dimdom/issues"
   },
-  "homepage": "https://github.com/romancow/dimdom#readme",
+  "homepage": "https://github.com/romancow/dimdom",
   "devDependencies": {
     "chai": "^3.5.0",
     "coffee-script": "^1.10.0",
