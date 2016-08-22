@@ -1,0 +1,9 @@
+#configuration files
+Cakefile
+karma.conf.coffee
+
+# coffee source folder
+src/
+
+# test folder
+test/
