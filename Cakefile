@@ -1,23 +1,30 @@
 {writeFileSync} = require 'fs'
 {execSync} = require 'child_process'
 
-libName = 'dimdom'
+libName  = 'dimdom'
+srcFile  = "./src/#{libName}.coffee"
+destFile = "./dist/#{libName}.js"
+minFile  = "./dist/#{libName}.min.js"
 
 task 'lint', 'Lint project coffeescript', (options) ->
-	success = false
-	try
-		success = !!execSync("coffeelint ./src/#{libName}.coffee", {stdio: 'inherit'})
-	catch error
-		console.log(error.message)
-	return success
+	tryExecSync("coffeelint #{srcFile}")
 
 task 'build', 'Build project with header', (options) ->
 	return unless invoke('lint')
 	header = compileSync(getHeader(), stdio: true, bare: true, 'no-header': true)
 	console.log(header)
-	code = compileSync("./src/#{libName}.coffee")
-	writeFileSync("./dist/#{libName}.js", "#{header}\n#{code}")
-	console.log('\nbuild successful')
+	code = compileSync(srcFile)
+	writeFileSync(destFile, "#{header}\n#{code}")
+	console.log('minifying...')
+	result = if invoke('minify') then '\nbuild successful' else 'minification failed!'
+	console.log(result)
+
+task 'minify', 'Create minified version of the current build', (options) ->
+	tryExecSync "uglifyjs #{destFile}",
+		compress: true
+		comments: true
+		output: minFile
+		lint: true
 
 getHeader = ->
 	info = require('./package.json')
@@ -25,25 +32,39 @@ getHeader = ->
 	year = new Date().getUTCFullYear()
 	date = new Date().toISOString().replace(/:\d{2}\.\d+Z$/, 'Z')
 	"""
-	###
-	DimDom JavaScript Library v#{version}
-	#{homepage}
-
-	Copyright #{year} #{copyright}
-	Released under the #{license} license
-	#{licenseUrl}
-
-	Date: #{date}
+	###*
+	# @license
+	# DimDom JavaScript Library v#{version}
+	# #{homepage}
+	#
+	# Copyright #{year} #{copyright}
+	# Released under the #{license} license
+	# #{licenseUrl}
+	#
+	# Date: #{date}
 	###
 	"""
 
 compileSync = (data, options = {}) ->
-	opts = for option, val of options when val
-		"--#{option}" + (if val is true then '' else " #{val}")
-	cmd = 'coffee -c ' + opts.join(' ')
+	cmd = "coffee -c #{joinOptions(options)}"
 	result =
 		if options.stdio
 			execSync(cmd, {input: data})
 		else
 			execSync("#{cmd} --print #{data}")
 	result.toString()
+
+joinOptions = (options = {}) ->
+	opts = for opt, val of options when val
+		"--#{opt}" + (if val is true then '' else " #{val}")
+	opts.join(' ')
+
+tryExecSync = (cmd, options) ->
+	error = null
+	cmd += " #{joinOptions(options)}" if options?
+	try
+		execSync(cmd, stdio: 'inherit')
+	catch error
+		console.log(error.message)
+	not error
+
