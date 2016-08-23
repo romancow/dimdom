@@ -1,6 +1,7 @@
 #configuration files
 Cakefile
 karma.conf.coffee
+coffeelint.json
 
 # coffee source folder
 src/

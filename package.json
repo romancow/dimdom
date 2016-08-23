@@ -6,7 +6,8 @@
   "copyright": "Data Concepts, Inc.",
   "scripts": {
     "test": "karma start",
-    "build": "cake build"
+    "build": "cake build",
+    "lint": "coffeelint src/dimdom.coffee"
   },
   "repository": {
     "type": "git",
@@ -31,6 +32,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "coffee-script": "^1.10.0",
+    "coffeelint": "^1.15.7",
     "karma": "^1.2.0",
     "karma-chai": "^0.1.0",
     "karma-coffee-preprocessor": "^1.0.1",
