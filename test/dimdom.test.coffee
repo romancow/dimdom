@@ -177,7 +177,7 @@ describe 'DimDom', ->
 		forAllContexts complexContext, ->
 			it 'has attributes', ->
 				expect(@node.attributes).to.satisfy (attrs) ->
-					attrs.getNamedItem('class')?.value is 'test' and 
+					attrs.getNamedItem('class')?.value is 'test' and
 					attrs.getNamedItem('id')?.value is '1'
 
 			it 'has styles', ->
@@ -186,11 +186,11 @@ describe 'DimDom', ->
 
 			it 'has children', ->
 				expect(@node.children).to.satisfy ([h1, p]) ->
-					(h1.tagName is 'H1') and (h1.innerHTML is 'The Header') and 
+					(h1.tagName is 'H1') and (h1.innerHTML is 'The Header') and
 					(p.tagName is 'P') and (p.innerHTML is 'Testing...')
 	
 		context 'with SVG namespace', ->
-			subject -> new DimDom([DimDom.NS.SVG, 'svg'], width:100, height:100)
+			subject -> new DimDom([DimDom.NS.SVG, 'svg'], width: 100, height: 100)
 
 			it 'is a SVGSVGElement', ->
 				expect(@node).to.be.instanceof(SVGSVGElement)
