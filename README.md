@@ -39,10 +39,10 @@ provides an easy way to define new elements.
 
 ## Installation
 
-Download the repository and reference the `./dist/dimdom.js` file.
+Download the repository and reference the `dist/dimdom.js` or `dist/dimdom.min.js` file.
 
 *-OR-*
-Via the rawgit cdn at https://cdn.rawgit.com/romancow/dimdom/master/dist/dimdom.js
+Via the rawgit cdn at https://cdn.rawgit.com/romancow/dimdom/master/dist/dimdom.min.js
 
 *-OR-*
 Using npm with `npm install romancow/dimdom`
