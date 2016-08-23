@@ -1,9 +1,9 @@
 class DimDom
 
 	constructor: (name, attributes, styles, children) ->
-		[namespace, name, attributes, styles, children] = 
+		[namespace, name, attributes, styles, children] =
 			findConstructorArgs(name, attributes, styles, children)
-		Object.defineProperties @,
+		Object.defineProperties this,
 			namespace:
 				value: namespace
 			name:
@@ -17,14 +17,20 @@ class DimDom
 	
 	create: (document) ->
 		fragment = document.createDocumentFragment()
-		node = createNode.call(@, document)
+		node = createNode.call(this, document)
 		fragment.appendChild(node)
 		return fragment
 
-	appendTo:  (node) ->
+	appendTo: (node) ->
 		child = @create(node.ownerDocument)
 		node.appendChild(child)
-		return @
+		return this
+
+	# namespace presets
+	@NS:
+		HTML: 'http://www.w3.org/1999/xhtml'
+		SVG: 'http://www.w3.org/2000/svg'
+		MathML: 'http://www.w3.org/1998/Math/MathML'
 
 	# private methods
 
@@ -38,7 +44,7 @@ class DimDom
 
 		if isChildren(attributes)
 			[attributes, styles, children] = [{}, {}, attributes]
-		else if isChildren(styles)			
+		else if isChildren(styles)
 			[styles, children] = [attributes['styles'] ? {}, styles]
 			delete attributes['styles']
 
@@ -47,7 +53,7 @@ class DimDom
 		[namespace, name, attributes, styles, children]
 
 	createNode = (document) ->
-		node = 
+		node =
 			if @namespace?
 				document.createElementNS(@namespace, @name)
 			else
@@ -56,7 +62,7 @@ class DimDom
 			node.setAttribute(name, value)
 		for own name, value of @styles when value?
 			node.style[name] = value
-		childrenNodes = getChildrenNodes.call(@, document)
+		childrenNodes = getChildrenNodes.call(this, document)
 		for childNode in childrenNodes when childNode?
 			node.appendChild(childNode)
 		return node
@@ -83,15 +89,9 @@ class DimDom
 		unless val?
 			[]
 		else if Array.isArray(val)
-			val 
+			val
 		else
 			[val]
-
-	# namespace presets
-	@NS =
-		HTML: 'http://www.w3.org/1999/xhtml'
-		SVG: 'http://www.w3.org/2000/svg'
-		MathML: 'http://www.w3.org/1998/Math/MathML'
 
 	# create a subclass for each namespace preset
 	for abbr, ns of @NS
@@ -100,6 +100,7 @@ class DimDom
 
 			constructor: (name, attributes, styles, children) ->
 				super([namespace, name], attributes, styles, children)
+
 
 if module?.exports?
 	module.exports = DimDom
