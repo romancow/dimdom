@@ -1,9 +1,18 @@
 {writeFileSync} = require 'fs'
-{exec, execSync} = require 'child_process'
+{execSync} = require 'child_process'
 
 libName = 'dimdom'
 
+task 'lint', 'Lint project coffeescript', (options) ->
+	success = false
+	try
+		success = !!execSync("coffeelint ./src/#{libName}.coffee", {stdio: 'inherit'})
+	catch error
+		console.log(error.message)
+	return success
+
 task 'build', 'Build project with header', (options) ->
+	return unless invoke('lint')
 	header = compileSync(getHeader(), stdio: true, bare: true, 'no-header': true)
 	console.log(header)
 	code = compileSync("./src/#{libName}.coffee")

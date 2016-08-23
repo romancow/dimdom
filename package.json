@@ -7,7 +7,7 @@
   "scripts": {
     "test": "karma start",
     "build": "cake build",
-    "lint": "coffeelint src/dimdom.coffee"
+    "lint": "cake lint"
   },
   "repository": {
     "type": "git",
