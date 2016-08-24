@@ -5,10 +5,12 @@
   "main": "dist/dimdom.js",
   "copyright": "Data Concepts, Inc.",
   "scripts": {
-    "test": "karma start",
+    "test": "cake test",
     "build": "cake build",
     "lint": "cake lint",
-    "minify": "cake minify"
+    "minify": "cake minify",
+    "test:min": "cake test:min",
+    "build:test": "cake build:test"
   },
   "repository": {
     "type": "git",

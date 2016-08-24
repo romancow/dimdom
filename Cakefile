@@ -16,8 +16,9 @@ task 'build', 'Build project with header', (options) ->
 	code = compileSync(srcFile)
 	writeFileSync(destFile, "#{header}\n#{code}")
 	console.log('minifying...')
-	result = if invoke('minify') then '\nbuild successful' else 'minification failed!'
-	console.log(result)
+	success = invoke('minify')
+	console.log(if success then '\nbuild successful' else 'minification failed!')
+	success
 
 task 'minify', 'Create minified version of the current build', (options) ->
 	tryExecSync "uglifyjs #{destFile}",
@@ -25,6 +26,17 @@ task 'minify', 'Create minified version of the current build', (options) ->
 		comments: true
 		output: minFile
 		lint: true
+
+task 'test', 'Run tests on project coffeescript', (options) ->
+	tryExecSync('karma start')
+
+task 'test:min', 'Run tests on project\'s minified javascript', (options) ->
+	tryExecSync('karma start karma-min.conf.coffee')
+
+task 'build:test', 'Build the project and run tests on source and minified js', (options) ->
+	invoke('build') and
+	invoke('test')  and
+	invoke('test:min')
 
 getHeader = ->
 	info = require('./package.json')
@@ -67,4 +79,3 @@ tryExecSync = (cmd, options) ->
 	catch error
 		console.log(error.message)
 	not error
-
