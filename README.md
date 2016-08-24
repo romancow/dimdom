@@ -45,9 +45,7 @@ Download the repository and reference the `dist/dimdom.js` or `dist/dimdom.min.j
 Via the rawgit cdn at https://cdn.rawgit.com/romancow/dimdom/master/dist/dimdom.min.js
 
 *-OR-*
-Using npm with `npm install romancow/dimdom`
-
-(Sorry, it's not in the npm registry yet.)
+Using npm with `npm install dimdom`
 
 ## Examples
 
