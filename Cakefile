@@ -34,9 +34,11 @@ task 'test:min', 'Run tests on project\'s minified javascript', (options) ->
 	tryExecSync('karma start karma-min.conf.coffee')
 
 task 'build:test', 'Build the project and run tests on source and minified js', (options) ->
-	invoke('build') and
-	invoke('test')  and
-	invoke('test:min')
+	['build', 'test', 'test:min'].every (name) -> invoke(name)
+
+task 'prepublish', 'Build and test before publishing', ->
+	# we want to throw an error if the prepublish fails
+	invoke('build:test') or throw new Error('prepublish failed!')
 
 getHeader = ->
 	info = require('./package.json')

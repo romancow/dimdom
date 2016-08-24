@@ -10,7 +10,9 @@
     "lint": "cake lint",
     "minify": "cake minify",
     "test:min": "cake test:min",
-    "build:test": "cake build:test"
+    "build:test": "cake build:test",
+    "prepublish": "cake prepublish",
+    "postversion": "cake build"
   },
   "repository": {
     "type": "git",
