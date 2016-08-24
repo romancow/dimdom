@@ -18,8 +18,10 @@
   },
   "keywords": [
     "simple",
-    "dom",
-    "diminished"
+    "DOM",
+    "diminished",
+    "html",
+    "svg"
   ],
   "author": {
     "name": "Sean Wilson",
