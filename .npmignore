@@ -1,6 +1,7 @@
 #configuration files
 Cakefile
 karma.conf.coffee
+karma-min.conf.coffee
 coffeelint.json
 
 # coffee source folder
@@ -8,3 +9,6 @@ src/
 
 # test folder
 test/
+
+# vscode settings
+.vscode/
