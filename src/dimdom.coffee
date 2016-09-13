@@ -65,7 +65,12 @@ class DimDom
 			else
 				document.createElement(@name)
 		for own name, value of @attributes when value?
-			node.setAttribute(name, value)
+			[prefix, attr] = name.split(':', 2)
+			if attr?
+				ns = DimDom.NSPrefix[prefix]
+				node.setAttributeNS(ns, name, value)
+			else
+				node.setAttribute(name, value)
 		for own name, value of @styles when value?
 			node.style[name] = value
 		childrenNodes = getChildrenNodes.call(this, document)
