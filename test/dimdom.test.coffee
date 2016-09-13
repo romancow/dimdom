@@ -2,7 +2,7 @@ describe 'DimDom', ->
 
 	given 'name', -> 'div'
 	given 'namespace', -> DimDom.NS.HTML
-	given 'attributes', ->  { class: 'test', id: '1' }
+	given 'attributes', ->  { class: 'test', id: '1', 'xmlns:xlink': DimDom.NS.XLink }
 	given 'styles', -> { color: 'black', margin: 0 }
 	given 'child', -> new DimDom('p', 'Testing...')
 	given 'children', -> [
@@ -82,7 +82,7 @@ describe 'DimDom', ->
 		forAllContexts setContexts, ->
 			it 'is set', ->
 				expect(@subject).to.have.deep.property('attributes')
-					.that.deep.equals({ class: 'test', id: '1' })
+					.that.deep.equals({ class: 'test', id: '1', 'xmlns:xlink': 'http://www.w3.org/1999/xlink' })
 
 		forAllContexts emptyContexts, ->
 			it 'is empty', ->
@@ -178,7 +178,12 @@ describe 'DimDom', ->
 			it 'has attributes', ->
 				expect(@node.attributes).to.satisfy (attrs) ->
 					attrs.getNamedItem('class')?.value is 'test' and
-					attrs.getNamedItem('id')?.value is '1'
+					attrs.getNamedItem('id')?.value is '1' and
+					attrs.getNamedItem('xmlns:xlink')?.value is 'http://www.w3.org/1999/xlink'
+
+			it 'has attribute namespace', ->
+				nsAttr = @node.attributes.getNamedItem('xmlns:xlink')
+				expect(nsAttr).to.have.property('namespaceURI', 'http://www.w3.org/2000/xmlns/')
 
 			it 'has styles', ->
 				expect(@node.style).to.have.property('color', 'black')
@@ -190,10 +195,14 @@ describe 'DimDom', ->
 					(p.tagName is 'P') and (p.innerHTML is 'Testing...')
 	
 		context 'with SVG namespace', ->
-			subject -> new DimDom([DimDom.NS.SVG, 'svg'], width: 100, height: 100)
+			subject -> new DimDom([DimDom.NS.SVG, 'image'], 'xlink:href': 'sample.png')
 
-			it 'is a SVGSVGElement', ->
-				expect(@node).to.be.instanceof(SVGSVGElement)
+			it 'is a SVGElement', ->
+				expect(@node).to.be.instanceof(SVGElement)
+
+			it 'has xlink namespaced attribute', ->
+				nsAttr = @node.attributes.getNamedItem('xlink:href')
+				expect(nsAttr).to.have.property('namespaceURI', 'http://www.w3.org/1999/xlink')
 
 	describe '#appendTo', ->
 		given 'result', -> @subject.appendTo(document.body)
@@ -215,7 +224,7 @@ describe 'DimDom', ->
 				subject -> new DimDom.HTML('div')
 			'SVG': ->
 				given 'namespace', -> DimDom.NS.SVG
-				subject -> new DimDom.SVG('circle')
+				subject -> new DimDom.SVG('image', 'xlink:href': 'sample.png')
 			'MathML': ->
 				given 'namespace', -> DimDom.NS.MathML
 				subject -> new DimDom.MathML('mn')
