@@ -31,6 +31,12 @@ class DimDom
 		HTML: 'http://www.w3.org/1999/xhtml'
 		SVG: 'http://www.w3.org/2000/svg'
 		MathML: 'http://www.w3.org/1998/Math/MathML'
+		XLink: 'http://www.w3.org/1999/xlink'
+		XMLNS: 'http://www.w3.org/2000/xmlns/'
+
+	@NSPrefix:
+		xlink: @NS.XLink
+		xmlns: @NS.XMLNS
 
 	# private methods
 
@@ -93,8 +99,9 @@ class DimDom
 		else
 			[val]
 
-	# create a subclass for each namespace preset
-	for abbr, ns of @NS
+	# create subclass for namespace presets
+	['HTML', 'SVG', 'MathML'].forEach (abbr) =>
+		ns = @NS[abbr]
 		@[abbr] = class extends DimDom
 			namespace = ns
 
