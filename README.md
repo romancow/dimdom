@@ -79,6 +79,13 @@ As a shortcut for creating elements for the preset namespaces:
         new DimDom.SVG("circle", {cx:100, cy:100, r:25})
     );
 
+Currently only "xmlns" and "xlink" attribute namespaces are supported and can be 
+specified by separating the namespace prefix and attribute name with `:`
+
+    var elem = new DimDom.SVG("svg", {width:500, height:300, "xmlns:xlink": DimDom.NS.XLink});
+
+    var image = new DimDom.SVG("image", {"xlink:href": "sample.png"});
+
 To alter attributes, style, or children after instantiation, use the `attributes`,
 `styles`, and `children` properties:
 
