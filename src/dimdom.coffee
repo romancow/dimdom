@@ -65,9 +65,9 @@ class DimDom
 			else
 				document.createElement(@name)
 		for own name, value of @attributes when value?
-			[prefix, attr] = name.split(':', 2)
-			if attr?
-				ns = DimDom.NSPrefix[prefix]
+			[prefix, hasPrefix] = name.split(':', 2)
+			if hasPrefix?
+				ns = DimDom.NSPrefix[prefix] ? ''
 				node.setAttributeNS(ns, name, value)
 			else
 				node.setAttribute(name, value)
