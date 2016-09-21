@@ -40,7 +40,7 @@ class DimDom
 
 	# private methods
 
-	findConstructorArgs = (name, attributes, styles, children) ->
+	findConstructorArgs = (name, attributes = {}, styles, children = []) ->
 		[namespace, name] = name if Array.isArray(name)
 
 		if not isString(name)
@@ -49,9 +49,12 @@ class DimDom
 			throw new TypeError("DimDom namespace must be a string, not \"#{typeof namespace}\"")
 
 		if isChildren(attributes)
-			[attributes, styles, children] = [{}, {}, attributes]
+			[attributes, children] = [{}, attributes]
 		else if isChildren(styles)
-			[styles, children] = [attributes['styles'] ? {}, styles]
+			[styles, children] = [null, styles]
+
+		unless styles?
+			styles = attributes['styles'] ? {}
 			delete attributes['styles']
 
 		children = ensureArray(children)
@@ -94,7 +97,7 @@ class DimDom
 		val? and (typeof val is 'object') and not Array.isArray(val)
 
 	isChildren = (val) ->
-		(val instanceof DimDom) or (val instanceof Node) or not isObject(val)
+		val? and ((val instanceof DimDom) or (val instanceof Node) or not isObject(val))
 
 	ensureArray = (val) ->
 		unless val?
