@@ -114,6 +114,8 @@ describe 'DimDom', ->
 	describe '#children', ->
 		childContexts = filterContexts constructorContexts,
 			'with a child'
+		childContexts['with empty atributes'] = ->
+			subject -> new DimDom(@name, null, @child)
 		childrenContexts = filterContexts constructorContexts,
 			'with children'
 			'with all properties'
