@@ -3,7 +3,7 @@
 
 libName  = 'dimdom'
 srcDir   = './src'
-srcFile  = "#{srcDir}/#{libName}.coffee"
+srcFile  = "#{srcDir}/index.coffee"
 destFile = "./dist/#{libName}.js"
 minFile  = "./dist/#{libName}.min.js"
 encoding = 'utf8'

@@ -115,9 +115,3 @@ class DimDom
 
 			constructor: (name, attributes, styles, children) ->
 				super([namespace, name], attributes, styles, children)
-
-
-if module?.exports?
-	module.exports = DimDom
-else
-	@DimDom = DimDom
