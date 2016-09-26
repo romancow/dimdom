@@ -9,15 +9,17 @@ minFile  = "./dist/#{libName}.min.js"
 encoding = 'utf8'
 
 task 'lint', 'Lint project coffeescript', (options) ->
-	tryExecSync("coffeelint #{srcFile}")
+	{prepends} = getPrepends(srcFile)
+	lintAcc = (success, file) ->
+		success and tryExecSync("coffeelint #{file}")
+	[prepends..., srcFile].reduce(lintAcc, true)
 
 task 'build', 'Build project with header', (options) ->
 	return unless invoke('lint')
 	header = compileSync(getHeader(), stdio: true, bare: true, 'no-header': true)
 	console.log(header)
 	console.log("processing \"#{srcFile}\"...")
-	coffee = readFileSync(srcFile, encoding: encoding)
-	coffee = expandPrepends(coffee)
+	coffee = expandPrepends(srcFile)
 	console.log('compiling...')
 	js = compileSync(coffee, stdio: true)
 	writeFileSync(destFile, "#{header}\n#{js}")
@@ -88,15 +90,21 @@ tryExecSync = (cmd, options) ->
 		console.log(error.message)
 	not error
 
-expandPrepends = (code) ->
+getPrepends = (file) ->
+	code = readFileSync(file, encoding: encoding)
 	prependRegex = new RegExp(/^\s*\#\s*@cake-prepend\s+"([^"]+)"(\s|$)/)
-	prepends = loop
-		prepend = null
-		code = code.replace prependRegex, (match, path) ->
-			prepend = "#{srcDir}/#{path}"
-			''
-		break unless prepend
-		prepend
+	result =
+		prepends: loop
+			prepend = null
+			code = code.replace prependRegex, (match, path) ->
+				prepend = "#{srcDir}/#{path}"
+				''
+			break unless prepend
+			prepend
+		code: code
+
+expandPrepends = (file) ->
+	{prepends, code} = getPrepends(file)
 	prepends = prepends.map (path) ->
 		console.log("prepending \"#{path}\"...")
 		readFileSync(path, encoding: encoding)
