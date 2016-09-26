@@ -1,3 +1,4 @@
+# @cake-prepend "utilities.coffee"
 # @cake-prepend "dimdom.coffee"
 
 if module?.exports?

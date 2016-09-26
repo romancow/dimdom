@@ -90,22 +90,8 @@ class DimDom
 			else
 				child
 
-	isString = (val) ->
-		(typeof val is 'string') or (val instanceof String)
-
-	isObject = (val) ->
-		val? and (typeof val is 'object') and not Array.isArray(val)
-
 	isChildren = (val) ->
 		val? and ((val instanceof DimDom) or (val instanceof Node) or not isObject(val))
-
-	ensureArray = (val) ->
-		unless val?
-			[]
-		else if Array.isArray(val)
-			val
-		else
-			[val]
 
 	# create subclass for namespace presets
 	['HTML', 'SVG', 'MathML'].forEach (abbr) =>
