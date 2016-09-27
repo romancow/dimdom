@@ -12,7 +12,11 @@ module.exports = (config) -> config.set
 
 	# list of files / patterns to load in the browser
 	files: [
-		'src/*.coffee'
+		'src/utilities.coffee'
+		'src/dimdom.coffee'
+		'src/dimdom-item.coffee'
+		'src/dimdom-collection.coffee'
+		'src/index.coffee'
 		'test/**/*helpers.coffee'
 		'test/*.test.coffee'
 	]
