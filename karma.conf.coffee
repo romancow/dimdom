@@ -15,6 +15,7 @@ module.exports = (config) -> config.set
 		'src/utilities.coffee'
 		'src/dimdom.coffee'
 		'src/dimdom-item.coffee'
+		'src/dimdom-namespaces.coffee'
 		'src/dimdom-collection.coffee'
 		'src/index.coffee'
 		'test/**/*helpers.coffee'

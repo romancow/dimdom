@@ -11,3 +11,9 @@ ensureArray = (val) ->
 		val
 	else
 		[val]
+
+mergeInto = (obj, items...) ->
+	for item in items
+		for own key, val of item
+			obj[key] = val
+	return obj

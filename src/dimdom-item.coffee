@@ -36,18 +36,6 @@ class DimDomItem extends DimDom
 		for childNode in childrenNodes when childNode?
 			node.appendChild(childNode)
 		return node
-	
-	# namespace presets
-	@NS:
-		HTML: 'http://www.w3.org/1999/xhtml'
-		SVG: 'http://www.w3.org/2000/svg'
-		MathML: 'http://www.w3.org/1998/Math/MathML'
-		XLink: 'http://www.w3.org/1999/xlink'
-		XMLNS: 'http://www.w3.org/2000/xmlns/'
-
-	@NSPrefix:
-		xlink: @NS.XLink
-		xmlns: @NS.XMLNS
 
 	# private methods
 
@@ -74,12 +62,3 @@ class DimDomItem extends DimDom
 
 	isChildren = (val) ->
 		val? and ((val instanceof DimDom) or (val instanceof Node) or not isObject(val))
-
-	# create subclass for namespace presets
-	['HTML', 'SVG', 'MathML'].forEach (abbr) =>
-		ns = @NS[abbr]
-		@[abbr] = class extends DimDomItem
-			namespace = ns
-
-			constructor: (name, attributes, styles, children) ->
-				super([namespace, name], attributes, styles, children)

@@ -1,11 +1,11 @@
 # @cake-prepend "utilities.coffee"
 # @cake-prepend "dimdom.coffee"
 # @cake-prepend "dimdom-item.coffee"
+# @cake-prepend "dimdom-namespaces.coffee"
 # @cake-prepend "dimdom-collection.coffee"
 
-DimDomItem.Collection = DimDomCollection
-
+exports = mergeInto(DimDomItem, DimDomNamespaces, Collection: DimDomCollection)
 if module?.exports?
-	module.exports = DimDomItem
+	module.exports = exports
 else
-	@DimDom = DimDomItem
+	@DimDom = exports
