@@ -7,6 +7,7 @@ describe 'DimDomCollection', ->
 		textNode = document.createTextNode('some inner text')
 		node.appendChild(textNode)
 		return node
+	given 'collectionItem', -> new DimDom.Collection('some inner text')
 
 	subject -> new DimDom.Collection(@param)
 
@@ -29,8 +30,12 @@ describe 'DimDomCollection', ->
 			given 'param', -> @nodeItem
 			given 'nodeType', -> Node.ELEMENT_NODE
 
+		'with a DimDom collection': ->
+			given 'param', -> @collectionItem
+			given 'nodeType', -> Node.TEXT_NODE
+
 		'with all item types': ->
-			given 'param', -> [@ddItem, @strItem, @nodeItem]
+			given 'param', -> [@ddItem, @strItem, @nodeItem, @collectionItem]
 
 	emptyContexts = filterContexts constructorContexts,
 		'with no arguments'
@@ -40,6 +45,7 @@ describe 'DimDomCollection', ->
 		'with a DimDomItem'
 		'with a string'
 		'with a Node'
+		'with a DimDom collection'
 
 	multiItemContexts = filterContexts constructorContexts,
 		'with all item types'
@@ -61,13 +67,11 @@ describe 'DimDomCollection', ->
 			it 'has a single item', ->
 				expect(@subject).to.have.property('items')
 					.that.deep.equals([@param])
-					.and.to.have.lengthOf(1)
 
 		forAllContexts multiItemContexts, ->
 			it 'has items', ->
 				expect(@subject).to.have.property('items')
-					.that.deep.equals([@ddItem, @strItem, @nodeItem])
-					.and.to.have.lengthOf(3)
+					.that.deep.equals([@ddItem, @strItem, @nodeItem, @collectionItem])
 
 	describe '#create', ->
 		given 'result', -> @subject.create(document)
@@ -93,7 +97,7 @@ describe 'DimDomCollection', ->
 
 		forAllContexts multiItemContexts, ->
 			it 'has children', ->
-				expect(@result.childNodes).to.have.lengthOf(3)
+				expect(@result.childNodes).to.have.lengthOf(4)
 
 			it 'has correct node types', ->
 				nodeTypes = (child.nodeType for child in @result.childNodes)
@@ -101,6 +105,7 @@ describe 'DimDomCollection', ->
 					Node.ELEMENT_NODE
 					Node.TEXT_NODE
 					Node.ELEMENT_NODE
+					Node.TEXT_NODE
 				])
 
 			it 'has text', ->
@@ -116,5 +121,5 @@ describe 'DimDomCollection', ->
 				expect(@result).to.equal(@subject)
 
 			it 'appends', ->
-				expect(@appendContainer.childNodes).to.have.lengthOf(3)
+				expect(@appendContainer.childNodes).to.have.lengthOf(4)
 					.and.to.all.have.property('textContent', 'some inner text')

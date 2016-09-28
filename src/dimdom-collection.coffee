@@ -10,6 +10,8 @@ class DimDomCollection extends DimDom
 		for item in @items
 			if item instanceof DimDomItem
 				item.toNode(document)
+			else if item instanceof DimDomCollection
+				item.create(document)
 			else if item not instanceof Node
 				document.createTextNode(item)
 			else
