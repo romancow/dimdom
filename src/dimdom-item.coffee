@@ -25,7 +25,7 @@ class DimDomItem extends DimDom
 		for own name, value of @attributes when value?
 			[prefix, hasPrefix] = name.split(':', 2)
 			if hasPrefix?
-				ns = DimDom.NSPrefix[prefix] ? ''
+				ns = DimDomNamespaces.NSPrefix[prefix] ? ''
 				node.setAttributeNS(ns, name, value)
 			else
 				node.setAttribute(name, value)
