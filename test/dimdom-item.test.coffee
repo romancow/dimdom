@@ -1,4 +1,4 @@
-describe 'DimDom', ->
+describe 'DimDomItem', ->
 
 	given 'name', -> 'div'
 	given 'namespace', -> DimDom.NS.HTML
@@ -9,6 +9,7 @@ describe 'DimDom', ->
 		new DimDom('h1', 'The Header')
 		@child
 	]
+	given 'collection', -> new DimDom.Collection(@children)
 
 	constructorContexts =
 		'with just name': ->
@@ -31,6 +32,9 @@ describe 'DimDom', ->
 
 		'with children': ->
 			subject -> new DimDom(@name, @children)
+
+		'with child collection': ->
+			subject -> new DimDom(@name, @collection)
 
 		'with all properties': ->
 			subject -> new DimDom([@namespace, @name], @attributes, @styles, @children)
@@ -58,6 +62,7 @@ describe 'DimDom', ->
 			'with styles in attributes'
 			'with a child'
 			'with children'
+			'with child collection'
 
 		forAllContexts setContexts, ->
 			it 'is set', ->
@@ -78,6 +83,7 @@ describe 'DimDom', ->
 			'with styles in attributes'
 			'with a child'
 			'with children'
+			'with child collection'
 
 		forAllContexts setContexts, ->
 			it 'is set', ->
@@ -100,6 +106,7 @@ describe 'DimDom', ->
 			'with attributes'
 			'with a child'
 			'with children'
+			'with child collection'
 
 		forAllContexts setContexts, ->
 			it 'is set', ->
@@ -118,6 +125,7 @@ describe 'DimDom', ->
 			subject -> new DimDom(@name, null, @child)
 		childrenContexts = filterContexts constructorContexts,
 			'with children'
+			'with child collection'
 			'with all properties'
 		emptyContexts = filterContexts constructorContexts,
 			'with just name'
@@ -212,30 +220,9 @@ describe 'DimDom', ->
 			'with all properties'
 
 		forAllContexts myContext, ->
-			it 'resturns self', ->
+			it 'returns self', ->
 				expect(@result).to.equal(@subject)
 
 			it 'appends', ->
 				element = document.getElementById('1')
 				expect(element).to.exist.and.to.have.property('tagName', 'DIV')
-
-	describe 'namespace sub-class', ->
-		namespaceContexts =
-			'HTML': ->
-				given 'namespace', -> DimDom.NS.HTML
-				subject -> new DimDom.HTML('div')
-			'SVG': ->
-				given 'namespace', -> DimDom.NS.SVG
-				subject -> new DimDom.SVG('image', 'xlink:href': 'sample.png')
-			'MathML': ->
-				given 'namespace', -> DimDom.NS.MathML
-				subject -> new DimDom.MathML('mn')
-
-		forAllContexts namespaceContexts, ->
-			describe '#constructor', ->
-				it 'creates a DimDom', ->
-					expect(@subject).to.be.an.instanceof(DimDom)
-
-				it 'sets namespace', ->
-					expect(@subject).to.have.property('namespace')
-						.that.equals(@namespace)

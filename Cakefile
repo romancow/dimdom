@@ -1,20 +1,28 @@
-{writeFileSync} = require 'fs'
+{writeFileSync, readFileSync} = require 'fs'
 {execSync} = require 'child_process'
 
 libName  = 'dimdom'
-srcFile  = "./src/#{libName}.coffee"
+srcDir   = './src'
+srcFile  = "#{srcDir}/index.coffee"
 destFile = "./dist/#{libName}.js"
 minFile  = "./dist/#{libName}.min.js"
+encoding = 'utf8'
 
 task 'lint', 'Lint project coffeescript', (options) ->
-	tryExecSync("coffeelint #{srcFile}")
+	{prepends} = getPrepends(srcFile)
+	lintAcc = (success, file) ->
+		success and tryExecSync("coffeelint #{file}")
+	[prepends..., srcFile].reduce(lintAcc, true)
 
 task 'build', 'Build project with header', (options) ->
 	return unless invoke('lint')
 	header = compileSync(getHeader(), stdio: true, bare: true, 'no-header': true)
 	console.log(header)
-	code = compileSync(srcFile)
-	writeFileSync(destFile, "#{header}\n#{code}")
+	console.log("processing \"#{srcFile}\"...")
+	coffee = expandPrepends(srcFile)
+	console.log('compiling...')
+	js = compileSync(coffee, stdio: true)
+	writeFileSync(destFile, "#{header}\n#{js}")
 	console.log('minifying...')
 	success = invoke('minify')
 	console.log(if success then '\nbuild successful' else 'minification failed!')
@@ -81,3 +89,23 @@ tryExecSync = (cmd, options) ->
 	catch error
 		console.log(error.message)
 	not error
+
+getPrepends = (file) ->
+	code = readFileSync(file, encoding: encoding)
+	prependRegex = new RegExp(/^\s*\#\s*@cake-prepend\s+"([^"]+)"(\s|$)/)
+	result =
+		prepends: loop
+			prepend = null
+			code = code.replace prependRegex, (match, path) ->
+				prepend = "#{srcDir}/#{path}"
+				''
+			break unless prepend
+			prepend
+		code: code
+
+expandPrepends = (file) ->
+	{prepends, code} = getPrepends(file)
+	prepends = prepends.map (path) ->
+		console.log("prepending \"#{path}\"...")
+		readFileSync(path, encoding: encoding)
+	return [prepends..., code].join('\n')

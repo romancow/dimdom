@@ -110,3 +110,19 @@ Or create and append the corresponding node in one step:
     var parent = document.getElementById("container");
     var elem = new DimDom("div", "This is the inner text.");
     elem.appendTo(parent);
+
+You can also create a DimDom "collection" to represent a list of DimDom items without a parent:
+
+    var collection = new DimDom.Collection([
+        new DimDom("p", "Some paragraph text"),
+        "Some standalone text",
+        document.createElement("div")
+    ]);
+
+A collection can be appended directly to a node:
+
+    collection.appendTo(someNode);
+
+Or used as the children for a new DimDom instance:
+
+    var parent = new DimDom("section", collection);
