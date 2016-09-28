@@ -212,7 +212,7 @@ describe 'DimDomItem', ->
 			'with all properties'
 
 		forAllContexts myContext, ->
-			it 'resturns self', ->
+			it 'returns self', ->
 				expect(@result).to.equal(@subject)
 
 			it 'appends', ->

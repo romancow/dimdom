@@ -10,6 +10,6 @@ class DimDom
 		return fragment
 
 	appendTo: (node) ->
-		child = @create(node.ownerDocument)
-		node.appendChild(child)
+		fragment = @create(node.ownerDocument)
+		node.appendChild(fragment)
 		return this
