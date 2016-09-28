@@ -2,9 +2,8 @@ class DimDomItem extends DimDom
 
 	constructor: (name, attributes, styles, children) ->
 		super(@toNode)
-		[namespace, name, attributes, styles, children] =
+		[namespace, name, attributes, styles, @_children] =
 			findConstructorArgs(name, attributes, styles, children)
-		@_childrenCollection = new DimDomCollection(children)
 		Object.defineProperties this,
 			namespace:
 				value: namespace
@@ -15,7 +14,7 @@ class DimDomItem extends DimDom
 			styles:
 				value: styles
 			children:
-				value: @_childrenCollection.items
+				value: @_children.items
 
 	toNode: (document) ->
 		node =
@@ -32,7 +31,7 @@ class DimDomItem extends DimDom
 				node.setAttribute(name, value)
 		for own name, value of @styles when value?
 			node.style[name] = value
-		childrenNodes = @_childrenCollection.toNodes(document)
+		childrenNodes = @_children.toNodes(document)
 		for childNode in childrenNodes when childNode?
 			node.appendChild(childNode)
 		return node
@@ -56,9 +55,15 @@ class DimDomItem extends DimDom
 			styles = attributes['styles'] ? {}
 			delete attributes['styles']
 
-		children = ensureArray(children)
+		if children not instanceof DimDomCollection
+			children = new DimDomCollection(children)
 			
 		[namespace, name, attributes, styles, children]
 
 	isChildren = (val) ->
-		val? and ((val instanceof DimDom) or (val instanceof Node) or not isObject(val))
+		val? and (
+			(val instanceof DimDom) or
+			(val instanceof Node) or
+			(val instanceof DimDomCollection) or
+			not isObject(val)
+		)

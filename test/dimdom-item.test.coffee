@@ -9,6 +9,7 @@ describe 'DimDomItem', ->
 		new DimDom('h1', 'The Header')
 		@child
 	]
+	given 'collection', -> new DimDom.Collection(@children)
 
 	constructorContexts =
 		'with just name': ->
@@ -31,6 +32,9 @@ describe 'DimDomItem', ->
 
 		'with children': ->
 			subject -> new DimDom(@name, @children)
+
+		'with child collection': ->
+			subject -> new DimDom(@name, @collection)
 
 		'with all properties': ->
 			subject -> new DimDom([@namespace, @name], @attributes, @styles, @children)
@@ -58,6 +62,7 @@ describe 'DimDomItem', ->
 			'with styles in attributes'
 			'with a child'
 			'with children'
+			'with child collection'
 
 		forAllContexts setContexts, ->
 			it 'is set', ->
@@ -78,6 +83,7 @@ describe 'DimDomItem', ->
 			'with styles in attributes'
 			'with a child'
 			'with children'
+			'with child collection'
 
 		forAllContexts setContexts, ->
 			it 'is set', ->
@@ -100,6 +106,7 @@ describe 'DimDomItem', ->
 			'with attributes'
 			'with a child'
 			'with children'
+			'with child collection'
 
 		forAllContexts setContexts, ->
 			it 'is set', ->
@@ -118,6 +125,7 @@ describe 'DimDomItem', ->
 			subject -> new DimDom(@name, null, @child)
 		childrenContexts = filterContexts constructorContexts,
 			'with children'
+			'with child collection'
 			'with all properties'
 		emptyContexts = filterContexts constructorContexts,
 			'with just name'
