@@ -12,7 +12,7 @@ given = (name, fn) ->
 				isCached = true
 				cache = val
 	afterEach ->
-		delete @subject
+		delete @[name]
 
 subject = (fn) -> given('subject', fn)
 
